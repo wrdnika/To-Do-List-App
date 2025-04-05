@@ -5,10 +5,14 @@
         <h1
           class="text-4xl font-extralight text-white tracking-wide flex items-center justify-center gap-3"
         >
-          <ClipboardList class="w-10 h-10 text-cyan-400" />
-          Todo List
+          <img
+            src="/wrdnika-white.png"
+            alt="Logo"
+            class="w-10 h-10 object-contain rounded-xl"
+          />
+          Wrdnika
         </h1>
-        <p class="text-gray-400 mt-2">Organize your tasks</p>
+        <p class="text-gray-400 mt-2">Todo List App</p>
       </header>
 
       <div
