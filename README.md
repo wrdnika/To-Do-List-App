@@ -3,7 +3,7 @@
 A **To-Do List App** built with **Vue 3**, **Vite**, and **Tailwind CSS**.  
 This project is designed with a glassmorphism style, and includes powerful productivity features like priorities, deadlines, editing, reminders, and more.
 
-![Preview](preview.png)
+![Preview](image.png)
 
 ---
 
