@@ -1,3 +1,4 @@
+// App.vue
 <template>
   <div class="flex items-center justify-center p-4">
     <div class="w-full max-w-md">
@@ -33,11 +34,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from "vue";
+import { ref, onMounted, onUnmounted, computed, watch } from "vue";
 import { ClipboardList } from "lucide-vue-next";
 import TodoForm from "./components/TodoForm.vue";
 import TodoList from "./components/TodoList.vue";
 
+// Create a ref for tasks with a default value
 const tasks = ref([
   {
     id: 1,
@@ -48,6 +50,25 @@ const tasks = ref([
     reminder: true,
   },
 ]);
+
+// Load tasks from localStorage when the component is mounted
+onMounted(() => {
+  const savedTasks = localStorage.getItem("tasks");
+  if (savedTasks) {
+    tasks.value = JSON.parse(savedTasks);
+  }
+
+  reminderInterval = setInterval(checkReminders, 60000);
+});
+
+// Save tasks to localStorage whenever they change
+watch(
+  tasks,
+  (newTasks) => {
+    localStorage.setItem("tasks", JSON.stringify(newTasks));
+  },
+  { deep: true } // Use deep watching to detect changes in task properties
+);
 
 const addTask = ({ text, deadline, priority }) => {
   tasks.value.push({
@@ -83,10 +104,6 @@ const checkReminders = () => {
     }
   });
 };
-
-onMounted(() => {
-  reminderInterval = setInterval(checkReminders, 60000);
-});
 
 onUnmounted(() => {
   clearInterval(reminderInterval);
