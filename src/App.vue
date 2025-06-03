@@ -1,4 +1,3 @@
-// App.vue
 <template>
   <div class="flex items-center justify-center p-4">
     <div class="w-full max-w-md">
@@ -39,7 +38,6 @@ import { ClipboardList } from "lucide-vue-next";
 import TodoForm from "./components/TodoForm.vue";
 import TodoList from "./components/TodoList.vue";
 
-// Create a ref for tasks with a default value
 const tasks = ref([
   {
     id: 1,
@@ -67,7 +65,7 @@ watch(
   (newTasks) => {
     localStorage.setItem("tasks", JSON.stringify(newTasks));
   },
-  { deep: true } // Use deep watching to detect changes in task properties
+  { deep: true }
 );
 
 const addTask = ({ text, deadline, priority }) => {
