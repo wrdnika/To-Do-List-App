@@ -1,34 +1,65 @@
 <template>
-  <div class="flex items-center justify-center p-4">
-    <div class="w-full max-w-md">
-      <header class="mb-8 text-center">
-        <h1
-          class="text-4xl font-extralight text-white tracking-wide flex items-center justify-center gap-3"
-        >
-          <img
-            src="/wrdnika-white.png"
-            alt="Logo"
-            class="w-10 h-10 object-contain rounded-xl"
-          />
-          Wrdnika
-        </h1>
-        <p class="text-gray-400 mt-2">Todo List App</p>
-      </header>
-
-      <div
-        class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 overflow-hidden"
-      >
-        <TodoForm @add="addTask" />
-        <div class="border-t border-white/20">
-          <TodoList
-            :tasks="tasks"
-            @toggle="toggleTask"
-            @remove="removeTask"
-            @update="updateTask"
-          />
+  <div id="app-container">
+    <header
+      class="bg-white/5 backdrop-blur-lg border-b border-white/20 shadow-lg w-full fixed top-0 left-0 z-10"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-start h-16">
+          <div class="flex items-center gap-3">
+            <img
+              src="/wrdnika-white.png"
+              alt="Logo"
+              class="w-10 h-10 object-contain rounded-xl"
+            />
+            <div>
+              <h1 class="text-2xl font-light text-white tracking-wide">
+                Wrdnika
+              </h1>
+              <p class="text-xs text-gray-400">Todo List App</p>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </header>
+
+    <main class="mt-16 p-2">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div class="lg:col-span-1 space-y-6">
+            <div
+              class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 p-6"
+            >
+              <TodoForm @add="addTask" />
+            </div>
+            <div
+              class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 p-6"
+            >
+              <TodoSearch @search="handleSearch" />
+            </div>
+            <div
+              class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 p-6"
+            >
+              <TodoFilter @filter="handleFilter" />
+            </div>
+            <div
+              class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 p-6"
+            >
+              <TodoSort @sort="handleSort" />
+            </div>
+          </div>
+          <div
+            class="lg:col-span-2 bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20"
+          >
+            <TodoList
+              :tasks="filteredTasks"
+              @toggle="toggleTask"
+              @remove="removeTask"
+              @update="updateTask"
+            />
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
 </template>
 
@@ -37,6 +68,9 @@ import { ref, onMounted, onUnmounted, computed, watch } from "vue";
 import { ClipboardList } from "lucide-vue-next";
 import TodoForm from "./components/TodoForm.vue";
 import TodoList from "./components/TodoList.vue";
+import TodoFilter from "./components/TodoFilter.vue";
+import TodoSort from "./components/TodoSort.vue";
+import TodoSearch from "./components/TodoSearch.vue";
 
 const tasks = ref([
   {
@@ -46,6 +80,8 @@ const tasks = ref([
     priority: "High",
     deadline: "2025-04-01",
     reminder: true,
+    categories: ["Work"],
+    notes: "This is a note for the task.",
   },
 ]);
 
@@ -68,7 +104,56 @@ watch(
   { deep: true }
 );
 
-const addTask = ({ text, deadline, priority }) => {
+const filters = ref({
+  status: 'all',
+  priority: 'all',
+  category: '',
+  date: ''
+});
+
+const handleFilter = (newFilters) => {
+  filters.value = newFilters;
+};
+
+const sortBy = ref('deadline');
+
+const handleSort = (newSortBy) => {
+  sortBy.value = newSortBy;
+};
+
+const searchQuery = ref('');
+
+const handleSearch = (newSearchQuery) => {
+  searchQuery.value = newSearchQuery;
+};
+
+const filteredTasks = computed(() => {
+  let filtered = tasks.value.filter(task => {
+    const searchMatch = searchQuery.value === '' ||
+      task.text.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      task.notes.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      task.categories.some(cat => cat.toLowerCase().includes(searchQuery.value.toLowerCase()));
+
+    const statusMatch = filters.value.status === 'all' || (filters.value.status === 'completed' && task.completed) || (filters.value.status === 'active' && !task.completed);
+    const priorityMatch = filters.value.priority === 'all' || task.priority === filters.value.priority;
+    const categoryMatch = filters.value.category === '' || task.categories.includes(filters.value.category);
+    const dateMatch = filters.value.date === '' || task.deadline === filters.value.date;
+    return searchMatch && statusMatch && priorityMatch && categoryMatch && dateMatch;
+  });
+
+  if (sortBy.value === 'deadline') {
+    filtered.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+  } else if (sortBy.value === 'priority') {
+    const priorityOrder = { 'High': 1, 'Medium': 2, 'Low': 3 };
+    filtered.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+  } else if (sortBy.value === 'createdDate') {
+    filtered.sort((a, b) => b.id - a.id);
+  }
+
+  return filtered;
+});
+
+const addTask = ({ text, deadline, priority, categories, notes }) => {
   tasks.value.push({
     id: Date.now(),
     text,
@@ -76,6 +161,8 @@ const addTask = ({ text, deadline, priority }) => {
     deadline,
     priority,
     reminder: true,
+    categories,
+    notes,
   });
 };
 

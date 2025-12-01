@@ -37,6 +37,17 @@
       </div>
     </div>
 
+    <div class="mt-4 space-y-2 text-sm text-white/80">
+      <div v-if="task.notes" class="pl-9">
+        <p class="font-light">{{ task.notes }}</p>
+      </div>
+      <div v-if="task.categories && task.categories.length > 0" class="pl-9 flex items-center gap-2 flex-wrap">
+        <span v-for="category in task.categories" :key="category" class="bg-white/10 text-xs font-medium px-2 py-1 rounded-full">
+          {{ category }}
+        </span>
+      </div>
+    </div>
+
     <div class="flex justify-end space-x-2 mt-3">
       <button
         @click="editTask"
@@ -83,6 +94,16 @@
               <option value="Medium" class="bg-gray-800">Medium</option>
               <option value="Low" class="bg-gray-800">Low</option>
             </select>
+            <input
+              v-model="editCategories"
+              class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400"
+              placeholder="Categories (comma-separated)"
+            />
+            <textarea
+              v-model="editNotes"
+              class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400"
+              placeholder="Notes"
+            ></textarea>
           </div>
           <div class="flex justify-end space-x-2 mt-6">
             <button
@@ -115,6 +136,8 @@ const editing = ref(false);
 const editText = ref(props.task.text);
 const editDeadline = ref(props.task.deadline);
 const editPriority = ref(props.task.priority);
+const editCategories = ref(props.task.categories.join(', '));
+const editNotes = ref(props.task.notes);
 
 const toggleComplete = () => emit("toggle", props.task.id);
 const removeTask = () => emit("remove", props.task.id);
@@ -123,6 +146,8 @@ const editTask = () => {
   editText.value = props.task.text;
   editDeadline.value = props.task.deadline;
   editPriority.value = props.task.priority;
+  editCategories.value = props.task.categories.join(', ');
+  editNotes.value = props.task.notes;
   editing.value = true;
 };
 
@@ -132,6 +157,8 @@ const saveEdit = () => {
     text: editText.value,
     deadline: editDeadline.value,
     priority: editPriority.value,
+    categories: editCategories.value.split(',').map(c => c.trim()),
+    notes: editNotes.value,
   });
   editing.value = false;
 };

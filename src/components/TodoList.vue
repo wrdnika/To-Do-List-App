@@ -1,6 +1,11 @@
 <template>
   <div>
-    <TransitionGroup name="list" tag="div" class="divide-y divide-white/10">
+    <h2 class="text-2xl font-semibold text-white p-6 border-b border-white/10">Your Tasks</h2>
+    <div v-if="tasks.length === 0" class="text-center text-white/50 p-8">
+      <p class="mb-4">No tasks match your current filters.</p>
+      <p class="text-sm">Try adjusting your search or filter settings, or add a new task!</p>
+    </div>
+    <TransitionGroup v-else name="list" tag="div" class="divide-y divide-white/10">
       <TodoItem
         v-for="task in tasks"
         :key="task.id"
@@ -10,9 +15,6 @@
         @update="updateTask"
       />
     </TransitionGroup>
-    <div v-if="tasks.length === 0" class="text-center text-white/50 py-8 px-4">
-      No tasks yet. Add a new task!
-    </div>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="addTask" class="p-6 space-y-4">
+  <form @submit.prevent="addTask" class="space-y-4">
     <div class="relative">
       <input
         v-model="newTask"
@@ -35,6 +35,21 @@
         />
       </div>
     </div>
+    <div class="relative">
+      <input
+        v-model="categories"
+        type="text"
+        placeholder="Categories (comma-separated)"
+        class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all duration-300"
+      />
+    </div>
+    <div class="relative">
+      <textarea
+        v-model="notes"
+        placeholder="Notes"
+        class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all duration-300"
+      ></textarea>
+    </div>
     <button
       type="submit"
       class="w-full p-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl font-semibold uppercase tracking-wider hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2"
@@ -52,6 +67,8 @@ import { PlusIcon, CalendarIcon, ChevronDown } from "lucide-vue-next";
 const newTask = ref("");
 const deadline = ref("");
 const priority = ref("Medium");
+const categories = ref("");
+const notes = ref("");
 const isDropdownOpen = ref(false);
 const dropdownIcon = ref(null);
 const emit = defineEmits(["add"]);
@@ -62,10 +79,14 @@ const addTask = () => {
       text: newTask.value,
       deadline: deadline.value,
       priority: priority.value,
+      categories: categories.value.split(",").map((c) => c.trim()),
+      notes: notes.value,
     });
     newTask.value = "";
     deadline.value = "";
     priority.value = "Medium";
+    categories.value = "";
+    notes.value = "";
   }
 };
 
