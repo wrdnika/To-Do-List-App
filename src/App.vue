@@ -3,7 +3,7 @@
     <header
       class="bg-white/5 backdrop-blur-lg border-b border-white/20 shadow-lg w-full fixed top-0 left-0 z-10"
     >
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-start h-16">
           <div class="flex items-center gap-3">
             <img
@@ -22,39 +22,27 @@
       </div>
     </header>
 
-    <main class="mt-16 p-2">
-      <div class="max-w-7xl mx-auto">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <main class="mt-16 p-2 max-w-screen">
+      <div class="">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-2">
           <div class="lg:col-span-1 space-y-6">
             <div
               class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 p-6"
             >
               <TodoForm @add="addTask" />
             </div>
-            <div
-              class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 p-6"
-            >
-              <TodoSearch @search="handleSearch" />
-            </div>
-            <div
-              class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 p-6"
-            >
-              <TodoFilter @filter="handleFilter" />
-            </div>
-            <div
-              class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 p-6"
-            >
-              <TodoSort @sort="handleSort" />
-            </div>
           </div>
           <div
-            class="lg:col-span-2 bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20"
+            class="lg:col-span-3 bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20"
           >
             <TodoList
               :tasks="filteredTasks"
               @toggle="toggleTask"
               @remove="removeTask"
               @update="updateTask"
+              @search="handleSearch"
+              @filter="handleFilter"
+              @sort="handleSort"
             />
           </div>
         </div>
@@ -68,9 +56,6 @@ import { ref, onMounted, onUnmounted, computed, watch } from "vue";
 import { ClipboardList } from "lucide-vue-next";
 import TodoForm from "./components/TodoForm.vue";
 import TodoList from "./components/TodoList.vue";
-import TodoFilter from "./components/TodoFilter.vue";
-import TodoSort from "./components/TodoSort.vue";
-import TodoSearch from "./components/TodoSearch.vue";
 
 const tasks = ref([
   {
