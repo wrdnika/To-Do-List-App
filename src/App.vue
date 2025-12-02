@@ -1,5 +1,7 @@
 <template>
-  <div id="app-container">
+      <LiquidBackground class="absolute top-0 left-0 w-full h-full z-0" />
+
+  <div id="app-container" class="relative">
     <header
       class="bg-white/5 backdrop-blur-lg border-b border-white/20 shadow-lg w-full fixed top-0 left-0 z-10"
     >
@@ -22,7 +24,7 @@
       </div>
     </header>
 
-    <main class="mt-16 p-2 max-w-screen">
+    <main class="mt-16 p-2 max-w-screen relative z-10">
       <div class="">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-2">
           <div class="lg:col-span-1 space-y-6">
@@ -56,6 +58,7 @@ import { ref, onMounted, onUnmounted, computed, watch } from "vue";
 import { ClipboardList } from "lucide-vue-next";
 import TodoForm from "./components/TodoForm.vue";
 import TodoList from "./components/TodoList.vue";
+import LiquidBackground from "./components/LiquidBackground.vue";
 
 const tasks = ref([
   {

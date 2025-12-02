@@ -9,7 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "clsx": "^2.1.1",
     "lucide-vue-next": "^0.284.0",
+    "ogl": "^1.0.11",
+    "tailwind-merge": "^3.4.0",
     "vue": "^3.3.4"
   },
   "devDependencies": {

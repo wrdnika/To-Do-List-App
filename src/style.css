@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@keyframes gradient-animation {
+/* @keyframes gradient-animation {
   0% {
     background-position: 0% 50%;
   }
@@ -20,4 +20,4 @@ body {
   animation: gradient-animation 6s ease infinite;
   height: 100vh;
   margin: 0;
-}
+} */
