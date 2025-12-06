@@ -28,12 +28,11 @@
       <div class="">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-2">
           <div class="lg:col-span-1 space-y-6">
-            <div
-              class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 p-6"
-            >
-              <TodoForm @add="addTask" />
-            </div>
+            <Sidebar />
           </div>
+          <Modal :show="showModal" @close="showModal = false">
+            <TodoForm @add="addTask" />
+          </Modal>
           <div
             class="lg:col-span-3 bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20"
           >
@@ -45,6 +44,7 @@
               @search="handleSearch"
               @filter="handleFilter"
               @sort="handleSort"
+              @open-modal="showModal = true"
             />
           </div>
         </div>
@@ -56,9 +56,13 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed, watch } from "vue";
 import { ClipboardList } from "lucide-vue-next";
-import TodoForm from "./components/TodoForm.vue";
+import Sidebar from "./components/Sidebar.vue";
 import TodoList from "./components/TodoList.vue";
+import Modal from "./components/Modal.vue";
+import TodoForm from "./components/TodoForm.vue";
 import LiquidBackground from "./components/LiquidBackground.vue";
+
+const showModal = ref(false);
 
 const tasks = ref([
   {
@@ -73,7 +77,6 @@ const tasks = ref([
   },
 ]);
 
-// Load tasks from localStorage when the component is mounted
 onMounted(() => {
   const savedTasks = localStorage.getItem("tasks");
   if (savedTasks) {
@@ -83,7 +86,6 @@ onMounted(() => {
   reminderInterval = setInterval(checkReminders, 60000);
 });
 
-// Save tasks to localStorage whenever they change
 watch(
   tasks,
   (newTasks) => {
@@ -152,6 +154,7 @@ const addTask = ({ text, deadline, priority, categories, notes }) => {
     categories,
     notes,
   });
+  showModal.value = false;
 };
 
 const toggleTask = (id) => {

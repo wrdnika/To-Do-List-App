@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="p-6 border-b border-white/10">
-      <div class="flex flex-wrap items-center justify-between gap-4">
+    <div class="p-2 border-b border-white/10">
+      <div class="flex flex-wrap items-center justify-between gap-2">
         <div class="relative flex-grow sm:w-auto w-full">
           <input
             v-model="searchQuery"
@@ -12,6 +12,7 @@
           />
         </div>
         <div class="flex gap-2">
+          <AddTaskButton @open-modal="openModal" />
           <div class="relative">
             <button @click="showFilterOptions = !showFilterOptions" class="p-3 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 transition-colors" data-testid="filter-button">
               <Filter class="h-5 w-5" />
@@ -80,9 +81,9 @@
       </div>
     </div>
     <h2
-      class="text-2xl font-semibold text-white p-6 border-b border-white/10"
+      class="text-2xl font-semibold text-white py-2 px-4 border-b border-white/10"
     >
-      Your Tasks
+      Tasks List
     </h2>
     <div v-if="tasks.length === 0" class="text-center text-white/50 p-8">
       <p class="mb-4">No tasks match your current filters.</p>
@@ -112,6 +113,7 @@
 import { ref, reactive } from "vue";
 import { ArrowUpDown, Filter } from "lucide-vue-next";
 import TodoItem from "./TodoItem.vue";
+import AddTaskButton from "./AddTaskButton.vue";
 
 const props = defineProps(["tasks"]);
 const emit = defineEmits([
@@ -121,7 +123,12 @@ const emit = defineEmits([
   "search",
   "filter",
   "sort",
+  "open-modal",
 ]);
+
+const openModal = () => {
+  emit("open-modal");
+};
 
 const searchQuery = ref("");
 const applySearch = () => {
@@ -144,7 +151,7 @@ const showFilterOptions = ref(false);
 const applySort = (criteria) => {
   sortBy.value = criteria;
   emit("sort", sortBy.value);
-  showSortOptions.value = false; // Hide dropdown after selection
+  showSortOptions.value = false; 
 };
 
 const updateTask = (updatedTask) => {
