@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex flex-col h-full">
     <div class="p-2 border-b border-white/10">
       <div class="flex flex-wrap items-center justify-between gap-2">
         <div class="relative flex-grow sm:w-auto w-full">
@@ -81,31 +81,33 @@
       </div>
     </div>
     <h2
-      class="text-2xl font-semibold text-white py-2 px-4 border-b border-white/10"
+      class="text-2xl font-semibold text-white py-2 px-4 border-b border-white/10 flex-shrink-0"
     >
       Tasks List
     </h2>
-    <div v-if="tasks.length === 0" class="text-center text-white/50 p-8">
-      <p class="mb-4">No tasks match your current filters.</p>
-      <p class="text-sm">
-        Try adjusting your search or filter settings, or add a new task!
-      </p>
+    <div class="flex-grow overflow-y-auto">
+      <div v-if="tasks.length === 0" class="text-center text-white/50 p-8">
+        <p class="mb-4">No tasks match your current filters.</p>
+        <p class="text-sm">
+          Try adjusting your search or filter settings, or add a new task!
+        </p>
+      </div>
+      <TransitionGroup
+        v-else
+        name="list"
+        tag="div"
+        class="divide-y divide-white/10"
+      >
+        <TodoItem
+          v-for="task in tasks"
+          :key="task.id"
+          :task="task"
+          @toggle="toggleTask"
+          @remove="removeTask"
+          @update="updateTask"
+        />
+      </TransitionGroup>
     </div>
-    <TransitionGroup
-      v-else
-      name="list"
-      tag="div"
-      class="divide-y divide-white/10"
-    >
-      <TodoItem
-        v-for="task in tasks"
-        :key="task.id"
-        :task="task"
-        @toggle="toggleTask"
-        @remove="removeTask"
-        @update="updateTask"
-      />
-    </TransitionGroup>
   </div>
 </template>
 

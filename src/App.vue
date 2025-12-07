@@ -1,9 +1,9 @@
 <template>
       <LiquidBackground class="absolute top-0 left-0 w-full h-full z-0" />
 
-  <div id="app-container" class="relative">
+  <div id="app-container" class="relative h-screen flex flex-col">
     <header
-      class="bg-white/5 backdrop-blur-lg border-b border-white/20 shadow-lg w-full fixed top-0 left-0 z-10"
+      class="bg-white/5 backdrop-blur-lg border-b border-white/20 shadow-lg w-full z-10"
     >
       <div class="max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-start h-16">
@@ -24,9 +24,9 @@
       </div>
     </header>
 
-    <main class="mt-16 p-2 max-w-screen relative z-10">
-      <div class="">
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-2">
+    <main class="max-w-screen relative z-10 flex-grow overflow-hidden">
+      <div class="h-full p-2">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-2 h-full">
           <div class="lg:col-span-1 space-y-6">
             <Sidebar />
           </div>
@@ -34,7 +34,7 @@
             <TodoForm @add="addTask" />
           </Modal>
           <div
-            class="lg:col-span-3 bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20"
+            class="lg:col-span-3 bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 h-full"
           >
             <TodoList
               :tasks="filteredTasks"
