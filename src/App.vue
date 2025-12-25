@@ -33,8 +33,9 @@
           <Modal :show="showModal" @close="showModal = false">
             <TodoForm @add="addTask" />
           </Modal>
+          
           <div
-            class="lg:col-span-3 bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 h-full"
+            class="lg:col-span-3 bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 h-full min-h-0 overflow-hidden"
           >
             <TodoList
               :tasks="filteredTasks"

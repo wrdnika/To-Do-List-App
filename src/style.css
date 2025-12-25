@@ -2,22 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @keyframes gradient-animation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+/* Tambahkan di bawah @tailwind utilities */
+
+/* Kustomisasi Scrollbar untuk area TodoList */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px; /* Lebar scrollbar tipis */
 }
 
-body {
-  background: linear-gradient(-45deg, #1a1a2e, #213363, #1d4f8d, #1a1a2e);
-  background-size: 400% 400%;
-  animation: gradient-animation 6s ease infinite;
-  height: 100vh;
-  margin: 0;
-} */
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05); /* Track transparan halus */
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2); /* Thumb putih transparan */
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4); /* Lebih terang saat di-hover */
+}
