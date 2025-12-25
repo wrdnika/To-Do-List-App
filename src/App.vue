@@ -55,134 +55,185 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed, watch } from "vue";
-import { ClipboardList } from "lucide-vue-next";
+import { ref, computed, onMounted } from "vue";
 import Sidebar from "./components/Sidebar.vue";
 import TodoList from "./components/TodoList.vue";
 import Modal from "./components/Modal.vue";
 import TodoForm from "./components/TodoForm.vue";
 import LiquidBackground from "./components/LiquidBackground.vue";
+import { supabase } from "./supabase"; 
 
+const tasks = ref([]);
 const showModal = ref(false);
+const searchQuery = ref("");
+const filterCriteria = ref({
+  status: "all",
+  priority: "all",
+  category: "",
+  date: "",
+});
+const sortBy = ref("deadline");
 
-const tasks = ref([
-  {
-    id: 1,
-    text: "Design new project",
-    completed: false,
-    priority: "High",
-    deadline: "2025-04-01",
-    reminder: true,
-    categories: ["Work"],
-    notes: "This is a note for the task.",
-  },
-]);
+
+const fetchTasks = async () => {
+  const { data, error } = await supabase
+    .from('todos')
+    .select('*')
+    .order('created_at', { ascending: false });
+  
+  if (error) console.error('Error fetching tasks:', error);
+  else tasks.value = data;
+};
 
 onMounted(() => {
-  const savedTasks = localStorage.getItem("tasks");
-  if (savedTasks) {
-    tasks.value = JSON.parse(savedTasks);
-  }
-
-  reminderInterval = setInterval(checkReminders, 60000);
+  fetchTasks();
 });
 
-watch(
-  tasks,
-  (newTasks) => {
-    localStorage.setItem("tasks", JSON.stringify(newTasks));
-  },
-  { deep: true }
-);
-
-const filters = ref({
-  status: 'all',
-  priority: 'all',
-  category: '',
-  date: ''
-});
-
-const handleFilter = (newFilters) => {
-  filters.value = newFilters;
-};
-
-const sortBy = ref('deadline');
-
-const handleSort = (newSortBy) => {
-  sortBy.value = newSortBy;
-};
-
-const searchQuery = ref('');
-
-const handleSearch = (newSearchQuery) => {
-  searchQuery.value = newSearchQuery;
-};
-
-const filteredTasks = computed(() => {
-  let filtered = tasks.value.filter(task => {
-    const searchMatch = searchQuery.value === '' ||
-      task.text.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      task.notes.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      task.categories.some(cat => cat.toLowerCase().includes(searchQuery.value.toLowerCase()));
-
-    const statusMatch = filters.value.status === 'all' || (filters.value.status === 'completed' && task.completed) || (filters.value.status === 'active' && !task.completed);
-    const priorityMatch = filters.value.priority === 'all' || task.priority === filters.value.priority;
-    const categoryMatch = filters.value.category === '' || task.categories.includes(filters.value.category);
-    const dateMatch = filters.value.date === '' || task.deadline === filters.value.date;
-    return searchMatch && statusMatch && priorityMatch && categoryMatch && dateMatch;
-  });
-
-  if (sortBy.value === 'deadline') {
-    filtered.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
-  } else if (sortBy.value === 'priority') {
-    const priorityOrder = { 'High': 1, 'Medium': 2, 'Low': 3 };
-    filtered.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
-  } else if (sortBy.value === 'createdDate') {
-    filtered.sort((a, b) => b.id - a.id);
-  }
-
-  return filtered;
-});
-
-const addTask = ({ text, deadline, priority, categories, notes }) => {
-  tasks.value.push({
-    id: Date.now(),
+const addTask = async ({ text, deadline, priority, categories, notes }) => {
+  const newTask = {
     text,
     completed: false,
     deadline,
     priority,
-    reminder: true,
-    categories,
+    reminder: true, 
+    categories, 
     notes,
-  });
-  showModal.value = false;
-};
+  };
 
-const toggleTask = (id) => {
-  const task = tasks.value.find((t) => t.id === id);
-  if (task) task.completed = !task.completed;
-};
+  const { data, error } = await supabase
+    .from('todos')
+    .insert([newTask])
+    .select(); 
 
-const removeTask = (id) => {
-  tasks.value = tasks.value.filter((t) => t.id !== id);
-};
-
-const updateTask = (updatedTask) => {
-  const index = tasks.value.findIndex((t) => t.id === updatedTask.id);
-  if (index !== -1) tasks.value[index] = updatedTask;
-};
-
-let reminderInterval;
-
-const checkReminders = () => {
-  tasks.value.forEach((task) => {
-    if (task.reminder && new Date(task.deadline) <= new Date()) {
-      console.log(`Reminder: ${task.text} is due!`);
+  if (error) {
+    console.error('Error adding task:', error);
+  } else {
+    if (data && data.length > 0) {
+      tasks.value.unshift(data[0]); 
     }
-  });
+    showModal.value = false;
+  }
 };
 
-onUnmounted(() => {
-  clearInterval(reminderInterval);
+const toggleTask = async (id) => {
+  const taskIndex = tasks.value.findIndex((t) => t.id === id);
+  if (taskIndex === -1) return;
+  
+  const newStatus = !tasks.value[taskIndex].completed;
+
+  tasks.value[taskIndex].completed = newStatus;
+
+  const { error } = await supabase
+    .from('todos')
+    .update({ completed: newStatus })
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error toggling task:', error);
+    tasks.value[taskIndex].completed = !newStatus; 
+  }
+};
+
+const removeTask = async (id) => {
+  const previousTasks = [...tasks.value];
+  tasks.value = tasks.value.filter((t) => t.id !== id);
+
+  const { error } = await supabase
+    .from('todos')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error removing task:', error);
+    tasks.value = previousTasks; 
+  }
+};
+
+const updateTask = async (updatedTask) => {
+  const index = tasks.value.findIndex((t) => t.id === updatedTask.id);
+  if (index !== -1) {
+    const oldTask = tasks.value[index];
+    tasks.value[index] = updatedTask;
+
+    const { error } = await supabase
+      .from('todos')
+      .update({
+        text: updatedTask.text,
+        deadline: updatedTask.deadline,
+        priority: updatedTask.priority,
+        categories: updatedTask.categories,
+        notes: updatedTask.notes
+      })
+      .eq('id', updatedTask.id);
+
+    if (error) {
+      console.error('Error updating task:', error);
+      tasks.value[index] = oldTask; 
+    }
+  }
+};
+
+const handleSearch = (query) => {
+  searchQuery.value = query;
+};
+
+const handleFilter = (filters) => {
+  filterCriteria.value = filters;
+};
+
+const handleSort = (criteria) => {
+  sortBy.value = criteria;
+};
+
+const filteredTasks = computed(() => {
+  let filtered = tasks.value;
+
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase();
+    filtered = filtered.filter((task) =>
+      task.text.toLowerCase().includes(query)
+    );
+  }
+
+  filtered = filtered.filter((task) => {
+    const statusMatch =
+      filterCriteria.value.status === "all"
+        ? true
+        : filterCriteria.value.status === "completed"
+        ? task.completed
+        : !task.completed;
+
+    const priorityMatch =
+      filterCriteria.value.priority === "all"
+        ? true
+        : task.priority === filterCriteria.value.priority;
+
+    const categoryMatch = filterCriteria.value.category
+      ? task.categories.some((cat) =>
+          cat.toLowerCase().includes(filterCriteria.value.category.toLowerCase())
+        )
+      : true;
+
+    const dateMatch = filterCriteria.value.date
+      ? task.deadline === filterCriteria.value.date
+      : true;
+
+    return statusMatch && priorityMatch && categoryMatch && dateMatch;
+  });
+
+  let sorted = [...filtered]; 
+  
+  if (sortBy.value === "deadline") {
+    sorted.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+  } else if (sortBy.value === "priority") {
+    const priorityOrder = { High: 1, Medium: 2, Low: 3 };
+    sorted.sort(
+      (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]
+    );
+  } else if (sortBy.value === "createdDate") {
+    sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  }
+
+  return sorted;
 });
 </script>
