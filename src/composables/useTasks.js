@@ -1,9 +1,9 @@
-// src/composables/useTasks.js
 import { ref, computed, watchEffect } from 'vue';
 import { supabase } from '../supabase';
 
 export function useTasks(session) {
   const tasks = ref([]);
+  const todoCategories = ref([]);
   const showModal = ref(false);
   const searchQuery = ref('');
   const filterCriteria = ref({
@@ -14,6 +14,20 @@ export function useTasks(session) {
   });
   const sortBy = ref('deadline');
 
+  const fetchCategories = async () => {
+    if (!session.value?.user) return;
+
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('type', 'todo')
+      .eq('user_id', session.value.user.id) // Explicitly filter by user
+      .order('created_at');
+
+    if (error) console.error('Error fetching categories:', error);
+    else todoCategories.value = data || [];
+  };
+
   const fetchTasks = async () => {
     if (!session.value?.user) {
       tasks.value = [];
@@ -21,7 +35,7 @@ export function useTasks(session) {
     }
     const { data, error } = await supabase
       .from('todos')
-      .select('*')
+      .select('*, categories(id, name, color)')
       .eq('user_id', session.value.user.id)
       .order('created_at', { ascending: false });
 
@@ -30,10 +44,44 @@ export function useTasks(session) {
   };
 
   watchEffect(() => {
-    fetchTasks();
+    if (session.value?.user) {
+      fetchCategories();
+      fetchTasks();
+    }
   });
 
-  const addTask = async ({ text, deadline, priority, categories, notes }) => {
+  const addCategory = async (name, color) => {
+    if (!name) return;
+
+    const newCategory = {
+      name,
+      color,
+      type: 'todo',
+      user_id: session.value.user.id
+    };
+
+    const { data, error } = await supabase
+      .from('categories')
+      .insert([newCategory])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error adding category:', error);
+      return null;
+    } else {
+      todoCategories.value.push(data);
+      return data;
+    }
+  };
+
+  const addTask = async ({ text, deadline, priority, category_id, notes }) => {
+    console.log('Adding task:', { text, deadline, priority, category_id, notes }); // Debug log
+    if (!session.value?.user) {
+      console.error('No user session found');
+      return;
+    }
+
     const newTask = {
       user_id: session.value.user.id,
       text,
@@ -41,14 +89,14 @@ export function useTasks(session) {
       deadline,
       priority,
       reminder: true,
-      categories,
+      category_id: category_id || null, // Relational column
       notes,
     };
 
     const { data, error } = await supabase
       .from('todos')
       .insert([newTask])
-      .select();
+      .select('*, categories(id, name, color)'); // Select joined data immediately
 
     if (error) {
       console.error('Error adding task:', error);
@@ -94,7 +142,14 @@ export function useTasks(session) {
     const index = tasks.value.findIndex((t) => t.id === updatedTask.id);
     if (index !== -1) {
       const oldTask = { ...tasks.value[index] };
-      tasks.value[index] = updatedTask;
+      // Optimistic update - ensure we preserve the category object if ID didn't change, 
+      // or find the new one from todoCategories if it did.
+      let updatedCategory = oldTask.categories;
+      if (updatedTask.category_id !== oldTask.category_id) {
+        updatedCategory = todoCategories.value.find(c => c.id === updatedTask.category_id) || null;
+      }
+
+      tasks.value[index] = { ...updatedTask, categories: updatedCategory };
 
       const { error } = await supabase
         .from('todos')
@@ -102,7 +157,7 @@ export function useTasks(session) {
           text: updatedTask.text,
           deadline: updatedTask.deadline,
           priority: updatedTask.priority,
-          categories: updatedTask.categories,
+          category_id: updatedTask.category_id,
           notes: updatedTask.notes,
         })
         .eq('id', updatedTask.id);
@@ -141,17 +196,17 @@ export function useTasks(session) {
         filterCriteria.value.status === 'all'
           ? true
           : filterCriteria.value.status === 'completed'
-          ? task.completed
-          : !task.completed;
+            ? task.completed
+            : !task.completed;
       const priorityMatch =
         filterCriteria.value.priority === 'all'
           ? true
           : task.priority === filterCriteria.value.priority;
+
       const categoryMatch = filterCriteria.value.category
-        ? task.categories.some((cat) =>
-            cat.toLowerCase().includes(filterCriteria.value.category.toLowerCase())
-          )
+        ? task.categories?.name?.toLowerCase().includes(filterCriteria.value.category.toLowerCase())
         : true;
+
       const dateMatch = filterCriteria.value.date
         ? task.deadline === filterCriteria.value.date
         : true;
@@ -172,11 +227,13 @@ export function useTasks(session) {
 
   return {
     tasks,
+    todoCategories,
     showModal,
     searchQuery,
     filterCriteria,
     sortBy,
     addTask,
+    addCategory,
     toggleTask,
     removeTask,
     updateTask,

@@ -35,14 +35,55 @@
         />
       </div>
     </div>
-    <div class="relative">
-      <input
-        v-model="categories"
-        type="text"
-        :placeholder="$t('todo.form.categories')"
-        class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all duration-300"
-      />
+    <div class="relative flex gap-2">
+      <div class="relative flex-grow">
+        <select
+          v-model="selectedCategoryId"
+          class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all duration-300 appearance-none pointer-events-auto"
+        >
+          <option value="" disabled class="bg-gray-800">{{ $t('todo.form.categories') }}</option>
+          <option v-for="cat in categories" :key="cat.id" :value="cat.id" class="bg-gray-800">
+            {{ cat.name }}
+          </option>
+        </select>
+         <ChevronDown class="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 w-5 h-5 pointer-events-none" />
+      </div>
+      <button 
+        type="button"
+        @click="isCreatingCategory = !isCreatingCategory"
+        class="p-3 bg-white/10 border border-white/20 text-white rounded-xl hover:bg-white/20 transition-colors"
+        title="Add New Category"
+      >
+        <PlusIcon class="w-5 h-5" />
+      </button>
     </div>
+
+    <!-- Create Category Mini-Form -->
+    <div v-if="isCreatingCategory" class="p-4 bg-white/5 rounded-xl border border-white/10 space-y-3">
+      <h3 class="text-sm font-medium text-white/80">New Category</h3>
+      <div class="flex gap-2">
+        <input 
+          v-model="newCategoryName"
+          type="text"
+          placeholder="Category Name"
+          class="flex-grow p-2 bg-white/10 border border-white/20 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm"
+        />
+        <input 
+          v-model="newCategoryColor"
+          type="color"
+          class="w-10 h-10 p-1 bg-white/10 border border-white/20 rounded-lg cursor-pointer"
+          title="Category Color"
+        />
+        <button 
+          type="button"
+          @click="handleCreateCategory"
+          class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-sm font-medium transition-colors"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+
     <div class="relative">
       <textarea
         v-model="notes"
@@ -64,14 +105,35 @@
 import { ref } from "vue";
 import { PlusIcon, CalendarIcon, ChevronDown } from "lucide-vue-next";
 
+const props = defineProps({
+  categories: Array,
+  addCategory: Function
+});
+
 const newTask = ref("");
 const deadline = ref("");
 const priority = ref("Medium");
-const categories = ref("");
+const selectedCategoryId = ref("");
 const notes = ref("");
 const isDropdownOpen = ref(false);
+const isCreatingCategory = ref(false);
+const newCategoryName = ref("");
+const newCategoryColor = ref("#3b82f6"); // Default blue
+
 const dropdownIcon = ref(null);
 const emit = defineEmits(["add"]);
+
+const handleCreateCategory = async () => {
+  if (newCategoryName.value.trim() && props.addCategory) {
+    const newCat = await props.addCategory(newCategoryName.value, newCategoryColor.value);
+    if (newCat) {
+      selectedCategoryId.value = newCat.id; // Auto-select new category
+      isCreatingCategory.value = false;
+      newCategoryName.value = "";
+      newCategoryColor.value = "#3b82f6";
+    }
+  }
+};
 
 const addTask = () => {
   if (newTask.value.trim() !== "" && deadline.value !== "") {
@@ -79,13 +141,13 @@ const addTask = () => {
       text: newTask.value,
       deadline: deadline.value,
       priority: priority.value,
-      categories: categories.value.split(",").map((c) => c.trim()),
+      category_id: selectedCategoryId.value || null, // Emit category_id
       notes: notes.value,
     });
     newTask.value = "";
     deadline.value = "";
     priority.value = "Medium";
-    categories.value = "";
+    selectedCategoryId.value = "";
     notes.value = "";
   }
 };

@@ -3,6 +3,7 @@
     <div class="flex-grow overflow-hidden">
       <TodoList
         :tasks="tasks"
+        :categories="todoCategories"
         @toggle="toggleTask"
         @remove="removeTask"
         @update="updateTask"
@@ -14,12 +15,13 @@
     </div>
     
     <Modal :show="showModal" :title="$t('todo.modalTitle')" @close="showModal = false">
-      <TodoForm @add="addTask" />
+      <TodoForm :categories="todoCategories" :add-category="addCategory" @add="addTask" />
     </Modal>
   </div>
 </template>
 
 <script setup>
+import { toRef } from 'vue';
 import { useTasks } from '../composables/useTasks';
 import TodoList from '../components/TodoList.vue';
 import Modal from '../components/Modal.vue';
@@ -31,13 +33,15 @@ const props = defineProps({
 
 const {
   tasks,
+  todoCategories,
   showModal,
   addTask,
+  addCategory,
   toggleTask,
   removeTask,
   updateTask,
   handleSearch,
   handleFilter,
   handleSort,
-} = useTasks(props.session);
+} = useTasks(toRef(props, 'session'));
 </script>

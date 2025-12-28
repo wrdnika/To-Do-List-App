@@ -28,8 +28,8 @@
     <div class="flex-grow flex flex-col min-w-0 bg-gray-900/20 relative z-10 transition-all duration-300">
       <Header :session="session" :handleLogout="handleLogout" />
       
-      <main class="flex-grow overflow-y-auto custom-scrollbar p-8">
-        <div class="max-w-7xl mx-auto h-full">
+      <main class="flex-grow overflow-y-auto custom-scrollbar">
+        <div class="h-full">
           <router-view :session="session" />
         </div>
       </main>

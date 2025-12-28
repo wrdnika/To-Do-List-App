@@ -54,9 +54,9 @@
         </div>
       </div>
 
-      <h2 class="text-2xl font-semibold text-white py-2 px-4 border-b border-white/10 flex-shrink-0">
+      <!-- <h2 class="text-2xl font-semibold text-white py-2 px-4 border-b border-white/10 flex-shrink-0">
         {{ $t('todo.header') }}
-      </h2>
+      </h2> -->
     </div>
 
     <div class="flex-1 overflow-y-auto min-h-0 custom-scrollbar relative p-1">
@@ -76,6 +76,7 @@
           v-for="task in tasks"
           :key="task.id"
           :task="task"
+          :categories="categories"
           @toggle="toggleTask"
           @remove="removeTask"
           @update="updateTask"
@@ -91,7 +92,7 @@ import { ArrowUpDown, Filter } from "lucide-vue-next";
 import TodoItem from "./TodoItem.vue";
 import AddTaskButton from "./AddTaskButton.vue";
 
-const props = defineProps(["tasks"]);
+const props = defineProps(["tasks", "categories"]);
 const emit = defineEmits([
   "toggle",
   "remove",

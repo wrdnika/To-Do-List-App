@@ -41,9 +41,14 @@
       <div v-if="task.notes" class="pl-9">
         <p class="font-light">{{ task.notes }}</p>
       </div>
-      <div v-if="task.categories && task.categories.length > 0" class="pl-9 flex items-center gap-2 flex-wrap">
-        <span v-for="category in task.categories" :key="category" class="bg-white/10 text-xs font-medium px-2 py-1 rounded-full">
-          {{ category }}
+      <!-- Relational Category Badge -->
+      <div v-if="task.categories" class="pl-9 flex items-center gap-2 flex-wrap">
+        <span 
+          class="text-xs font-medium px-2 py-1 rounded-full text-white"
+          :class="['bg-white/10', task.categories.color ? '' : 'bg-gray-600']" 
+          :style="task.categories.color ? { backgroundColor: task.categories.color } : {}"
+        >
+          {{ task.categories.name }}
         </span>
       </div>
     </div>
@@ -93,11 +98,15 @@
               <option value="Medium" class="bg-gray-800">{{ $t('todo.form.priorityMedium') }}</option>
               <option value="Low" class="bg-gray-800">{{ $t('todo.form.priorityLow') }}</option>
             </select>
-            <input
-              v-model="editCategories"
-              class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400"
-              :placeholder="$t('todo.form.categories')"
-            />
+            <select
+              v-model="editCategoryId"
+              class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400 appearance-none bg-gray-800"
+            >
+               <option value="" disabled>{{ $t('todo.form.categories') }}</option>
+               <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+                 {{ cat.name }}
+               </option>
+            </select>
             <textarea
               v-model="editNotes"
               class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400"
@@ -131,14 +140,14 @@ import { useI18n } from 'vue-i18n';
 
 const { t, locale } = useI18n();
 
-const props = defineProps(["task"]);
+const props = defineProps(["task", "categories"]);
 const emit = defineEmits(["toggle", "remove", "update"]);
 
 const editing = ref(false);
 const editText = ref(props.task.text);
 const editDeadline = ref(props.task.deadline);
 const editPriority = ref(props.task.priority);
-const editCategories = ref(props.task.categories.join(', '));
+const editCategoryId = ref(props.task.categories?.id || props.task.category_id || "");
 const editNotes = ref(props.task.notes);
 
 const toggleComplete = () => emit("toggle", props.task.id);
@@ -148,7 +157,7 @@ const editTask = () => {
   editText.value = props.task.text;
   editDeadline.value = props.task.deadline;
   editPriority.value = props.task.priority;
-  editCategories.value = props.task.categories.join(', ');
+  editCategoryId.value = props.task.categories?.id || props.task.category_id || "";
   editNotes.value = props.task.notes;
   editing.value = true;
 };
@@ -159,7 +168,7 @@ const saveEdit = () => {
     text: editText.value,
     deadline: editDeadline.value,
     priority: editPriority.value,
-    categories: editCategories.value.split(',').map(c => c.trim()),
+    category_id: editCategoryId.value, // Emit category_id
     notes: editNotes.value,
   });
   editing.value = false;

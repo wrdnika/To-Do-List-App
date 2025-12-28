@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full flex flex-col gap-4">
+  <div class="h-full flex flex-col gap-4 p-4">
     <!-- Header with Action Button -->
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-bold text-white tracking-tight">{{ $t('subscription.title') }}</h1>
