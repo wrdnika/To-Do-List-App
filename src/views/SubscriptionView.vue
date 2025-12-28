@@ -14,14 +14,26 @@
 
     <!-- Main Content: Subscription List -->
     <div class="flex-grow overflow-hidden relative z-0">
-      <SubscriptionList ref="subListRef" :session="session" />
+      <SubscriptionList 
+        ref="subListRef" 
+        :session="session" 
+        @edit="handleEdit" 
+        @delete="handleDelete" 
+      />
     </div>
 
-    <!-- Add Form Modal -->
-    <Modal :show="showFormModal" @close="showFormModal = false">
+    <!-- Form Modal (Add/Edit) -->
+    <Modal :show="showFormModal" @close="closeModal">
       <div class="p-6">
-        <h2 class="text-xl font-bold text-white mb-6">Add New Subscription</h2>
-        <SubscriptionForm :session="session" @added="handleSubAdded" />
+        <h2 class="text-xl font-bold text-white mb-6">
+          {{ editingSubscription ? 'Edit Subscription' : 'Add New Subscription' }}
+        </h2>
+        <SubscriptionForm 
+          :session="session" 
+          :subscription="editingSubscription"
+          @added="handleSuccess" 
+          @updated="handleSuccess"
+        />
       </div>
     </Modal>
   </div>
@@ -30,6 +42,7 @@
 <script setup>
 import { ref } from 'vue';
 import { Plus } from 'lucide-vue-next';
+import { supabase } from '../supabase';
 import SubscriptionList from '../components/SubscriptionList.vue';
 import SubscriptionForm from '../components/SubscriptionForm.vue';
 import Modal from '../components/Modal.vue';
@@ -39,13 +52,44 @@ const props = defineProps({
 });
 
 const showFormModal = ref(false);
+const editingSubscription = ref(null);
 const subListRef = ref(null);
 
-const handleSubAdded = () => {
-  showFormModal.value = false;
+const handleEdit = (sub) => {
+  editingSubscription.value = sub;
+  showFormModal.value = true;
+};
+
+const handleDelete = async (sub) => {
+  if (!confirm(`Are you sure you want to delete ${sub.name}?`)) return;
+
+  try {
+    const { error } = await supabase
+      .from('subscriptions')
+      .delete()
+      .eq('id', sub.id);
+    
+    if (error) throw error;
+    
+    // Refresh list
+    if (subListRef.value) {
+      subListRef.value.refresh();
+    }
+  } catch (error) {
+    alert('Error deleting subscription: ' + error.message);
+  }
+};
+
+const handleSuccess = () => {
+  closeModal();
   // Refresh list
   if (subListRef.value) {
     subListRef.value.refresh();
   }
+};
+
+const closeModal = () => {
+  showFormModal.value = false;
+  editingSubscription.value = null;
 };
 </script>

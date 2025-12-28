@@ -105,21 +105,22 @@
       class="w-full p-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl font-semibold uppercase tracking-wider hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
     >
       <Loader2 v-if="loading" class="w-5 h-5 animate-spin" />
-      <span v-else>Save Subscription</span>
+      <span v-else>{{ subscription ? 'Update Subscription' : 'Save Subscription' }}</span>
     </button>
   </form>
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted, reactive, watch } from 'vue';
 import { supabase } from '../supabase';
 import { ChevronDown, Loader2 } from 'lucide-vue-next';
 
 const props = defineProps({
-  session: Object
+  session: Object,
+  subscription: Object // Optional: if provided, we're in edit mode
 });
 
-const emit = defineEmits(['added', 'close']);
+const emit = defineEmits(['added', 'updated', 'close']);
 
 const loading = ref(false);
 const categories = ref([]);
@@ -132,6 +133,30 @@ const form = reactive({
   first_payment_date: new Date().toISOString().substr(0, 10),
   notes: '',
 });
+
+// Watch for subscription prop changes (for editing)
+watch(() => props.subscription, (newSub) => {
+  if (newSub) {
+    form.name = newSub.name || '';
+    form.price = newSub.price || '';
+    form.cycle = newSub.cycle || 'monthly';
+    form.category_id = newSub.category_id || '';
+    form.first_payment_date = newSub.first_payment_date || new Date().toISOString().substr(0, 10);
+    form.notes = newSub.notes || '';
+  } else {
+    // Reset to defaults if subscription is null (e.g. closing/re-opening for add)
+    resetForm();
+  }
+}, { immediate: true });
+
+const resetForm = () => {
+  form.name = '';
+  form.price = '';
+  form.cycle = 'monthly';
+  form.category_id = '';
+  form.first_payment_date = new Date().toISOString().substr(0, 10);
+  form.notes = '';
+};
 
 // Predefined service data for auto-fill
 const serviceDefaults = {
@@ -161,6 +186,9 @@ const fetchCategories = async () => {
 };
 
 const handleNameChange = () => {
+  // Only auto-fill if we're not editing or if fields are empty
+  if (props.subscription) return;
+
   const service = serviceDefaults[form.name];
   if (service) {
     if (!form.price) form.price = service.price;
@@ -194,12 +222,12 @@ const handleCategoryChange = async (e) => {
         form.category_id = data.id;
       } catch (error) {
         alert('Failed to create category: ' + error.message);
-        form.category_id = '';
+        form.category_id = props.subscription?.category_id || '';
       } finally {
         loading.value = false;
       }
     } else {
-      form.category_id = '';
+      form.category_id = props.subscription?.category_id || '';
     }
   }
 };
@@ -207,26 +235,37 @@ const handleCategoryChange = async (e) => {
 const handleSubmit = async () => {
   loading.value = true;
   try {
-    const { error } = await supabase
-      .from('subscriptions')
-      .insert({
-        user_id: props.session.user.id,
-        name: form.name,
-        price: form.price,
-        currency: 'IDR',
-        cycle: form.cycle,
-        first_payment_date: form.first_payment_date,
-        category_id: form.category_id || null,
-        notes: form.notes
-      });
+    const payload = {
+      user_id: props.session.user.id,
+      name: form.name,
+      price: form.price,
+      currency: 'IDR',
+      cycle: form.cycle,
+      first_payment_date: form.first_payment_date,
+      category_id: form.category_id || null,
+      notes: form.notes
+    };
 
-    if (error) throw error;
+    if (props.subscription) {
+      // Update existing
+      const { error } = await supabase
+        .from('subscriptions')
+        .update(payload)
+        .eq('id', props.subscription.id);
+      
+      if (error) throw error;
+      emit('updated');
+    } else {
+      // Insert new
+      const { error } = await supabase
+        .from('subscriptions')
+        .insert(payload);
+      
+      if (error) throw error;
+      emit('added');
+    }
     
-    emit('added');
-    // Reset form
-    form.name = '';
-    form.price = '';
-    form.notes = '';
+    resetForm();
   } catch (error) {
     alert('Error saving subscription: ' + error.message);
   } finally {

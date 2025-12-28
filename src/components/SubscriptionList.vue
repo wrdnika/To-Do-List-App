@@ -27,7 +27,7 @@
       <div
         v-for="sub in subscriptions"
         :key="sub.id"
-        class="group relative bg-gray-900/40 backdrop-blur-sm border border-white/10 hover:border-cyan-500/50 rounded-2xl p-4 transition-all duration-300 hover:bg-gray-800/60"
+        class="group relative bg-gray-900/40 backdrop-blur-sm border border-white/10 hover:border-cyan-500/50 rounded-2xl p-4 transition-all duration-300 hover:bg-gray-800/60 transition-colors"
       >
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
@@ -45,14 +45,36 @@
           </div>
         </div>
 
-        <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs text-white/60">
-          <div class="flex items-center gap-1.5">
+        <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs">
+          <div class="flex items-center gap-1.5 text-white/60">
             <Calendar class="w-3.5 h-3.5" />
             <span>Next: {{ formatDate(sub.next_payment_date || sub.first_payment_date) }}</span>
           </div>
-          <div v-if="sub.status === 'active'" class="flex items-center gap-1.5 text-green-400">
-            <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-            <span>Active</span>
+          
+          <div class="flex items-center gap-3">
+            <!-- Card Actions (Visible on hover) -->
+            <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <button 
+                @click.stop="$emit('edit', sub)" 
+                class="text-white/40 hover:text-cyan-400 transition-colors"
+                title="Edit"
+              >
+                <Edit2 class="w-3.5 h-3.5" />
+              </button>
+              <button 
+                @click.stop="$emit('delete', sub)" 
+                class="text-white/40 hover:text-red-400 transition-colors"
+                title="Delete"
+              >
+                <Trash2 class="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            <!-- Status -->
+            <div v-if="sub.status === 'active'" class="flex items-center gap-1.5 text-green-400">
+              <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+              <span>Active</span>
+            </div>
           </div>
         </div>
       </div>
@@ -63,12 +85,14 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { supabase } from '../supabase';
-import { Loader2, Calendar, CreditCard } from 'lucide-vue-next';
+import { Loader2, Calendar, CreditCard, Edit2, Trash2 } from 'lucide-vue-next';
 import SubscriptionLogo from './SubscriptionLogo.vue';
 
 const props = defineProps({
   session: Object
 });
+
+const emit = defineEmits(['edit', 'delete']);
 
 const subscriptions = ref([]);
 const loading = ref(true);

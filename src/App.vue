@@ -20,22 +20,38 @@
     <Login :handleLogin="handleLogin" />
   </div>
 
-  <div v-else id="app-container" class="relative h-screen flex flex-col">
-    <Header :session="session" :handleLogout="handleLogout" />
-    <main class="max-w-screen relative z-10 flex-grow overflow-hidden">
-      <div class="h-full p-2">
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-2 h-full">
-          <div class="lg:col-span-1 space-y-6">
-            <Sidebar />
-          </div>
-          <div class="lg:col-span-3 h-full overflow-hidden">
-            <router-view :session="session" />
-          </div>
+  <div v-else id="app-container" class="relative h-screen flex overflow-hidden">
+    <!-- Sidebar -->
+    <Sidebar :session="session" />
+
+    <!-- Main Content Area -->
+    <div class="flex-grow flex flex-col min-w-0 bg-gray-900/20 relative z-10 transition-all duration-300">
+      <Header :session="session" :handleLogout="handleLogout" />
+      
+      <main class="flex-grow overflow-y-auto custom-scrollbar p-8">
+        <div class="max-w-7xl mx-auto h-full">
+          <router-view :session="session" />
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   </div>
 </template>
+
+<style>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+</style>
 
 <script setup>
 import { useAuth } from './composables/useAuth';
