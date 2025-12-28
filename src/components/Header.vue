@@ -1,7 +1,16 @@
 <template>
-  <header class="h-16 flex items-center justify-between px-8 border-b border-white/5 backdrop-blur-md relative z-20">
+  <header class="h-16 flex items-center justify-between px-4 md:px-8 border-b border-white/5 backdrop-blur-md relative z-20">
     <div class="flex items-center gap-4">
-      <h2 class="text-sm font-medium text-white/40 uppercase tracking-widest">
+      <!-- Hamburger Menu for Mobile -->
+      <button 
+        @click="$emit('toggle-sidebar')"
+        class="lg:hidden p-2 text-white hover:bg-white/10 rounded-lg transition-colors"
+        aria-label="Toggle Menu"
+      >
+        <Menu class="w-6 h-6" />
+      </button>
+
+      <h2 class="text-sm font-medium text-white/40 uppercase tracking-widest hidden sm:block">
         {{ $route.path === '/' ? $t('header.dashboard') : $t('header.tracker') }}
       </h2>
     </div>
@@ -57,13 +66,15 @@
 
 <script setup>
 import { ref } from 'vue';
-import { Settings, Info, LogOut, Globe } from 'lucide-vue-next';
+import { Settings, Info, LogOut, Globe, Menu } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
   session: Object,
   handleLogout: Function,
 });
+
+defineEmits(['toggle-sidebar']);
 
 const { locale } = useI18n();
 const isProfileOpen = ref(false);

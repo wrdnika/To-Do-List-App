@@ -21,12 +21,27 @@
   </div>
 
   <div v-else id="app-container" class="relative h-screen flex overflow-hidden">
+    <!-- Mobile Overlay -->
+    <div 
+      v-if="isSidebarOpen" 
+      @click="isSidebarOpen = false"
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm z-20 lg:hidden"
+    ></div>
+
     <!-- Sidebar -->
-    <Sidebar :session="session" />
+    <Sidebar 
+      :session="session" 
+      :is-open="isSidebarOpen"
+      @close="isSidebarOpen = false"
+    />
 
     <!-- Main Content Area -->
     <div class="flex-grow flex flex-col min-w-0 bg-gray-900/20 relative z-10 transition-all duration-300">
-      <Header :session="session" :handleLogout="handleLogout" />
+      <Header 
+        :session="session" 
+        :handleLogout="handleLogout" 
+        @toggle-sidebar="isSidebarOpen = !isSidebarOpen"
+      />
       
       <main class="flex-grow overflow-y-auto custom-scrollbar">
         <div class="h-full">
@@ -54,6 +69,7 @@
 </style>
 
 <script setup>
+import { ref } from 'vue';
 import { useAuth } from './composables/useAuth';
 import Login from './components/Login.vue';
 import Header from './components/Header.vue';
@@ -61,4 +77,5 @@ import Sidebar from './components/Sidebar.vue';
 import DotGrid from './components/DotGrid.vue';
 
 const { session, handleLogin, handleLogout } = useAuth();
+const isSidebarOpen = ref(false);
 </script>

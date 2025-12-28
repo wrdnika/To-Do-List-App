@@ -1,6 +1,9 @@
 <template>
   <aside 
-    class="flex flex-col h-screen w-64 bg-gray-900/40 backdrop-blur-md border-r border-white/10 transition-all duration-300 relative z-30"
+    class="fixed lg:relative h-screen w-64 bg-gray-900/40 backdrop-blur-md border-r border-white/10 transition-all duration-300 z-30 flex flex-col"
+    :class="[
+      isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+    ]"
   >
     <!-- Branding Section -->
     <div class="p-3">
@@ -21,6 +24,7 @@
     <nav class="flex-grow px-1 space-y-2 mt-2">
       <router-link
         to="/"
+        @click="$emit('close')"
         class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/60 hover:text-white hover:bg-white/5 transition-all duration-300 group"
         active-class="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-400 border border-cyan-500/20"
       >
@@ -30,6 +34,7 @@
 
       <router-link
         to="/subscriptions"
+        @click="$emit('close')"
         class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/60 hover:text-white hover:bg-white/5 transition-all duration-300 group"
         active-class="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-400 border border-cyan-500/20"
       >
@@ -44,8 +49,11 @@
 import { ListTodo, CreditCard } from 'lucide-vue-next';
 
 defineProps({
-  session: Object
+  session: Object,
+  isOpen: Boolean
 });
+
+defineEmits(['close']);
 </script>
 
 <style scoped>

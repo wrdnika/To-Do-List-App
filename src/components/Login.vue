@@ -68,9 +68,9 @@
       </div>
       
       <!-- Bottom Branding -->
-      <p class="mt-8 text-center text-white/20 text-[10px] font-medium uppercase tracking-[0.4em]">
+      <!-- <p class="mt-8 text-center text-white/20 text-[10px] font-medium uppercase tracking-[0.4em]">
         Design by wrdnika
-      </p>
+      </p> -->
     </div>
   </div>
 </template>

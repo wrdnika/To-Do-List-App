@@ -2,11 +2,11 @@
   <div
     class="p-4  border-b border-white/10 last:border-b-0 transition-all duration-300 hover:bg-white/5"
   >
-    <div class="flex justify-between items-center">
-      <div class="flex items-center space-x-3">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+      <div class="flex items-start sm:items-center space-x-3 flex-1 min-w-0">
         <button
           @click="toggleComplete"
-          class="text-white/50 hover:text-cyan-400 transition-colors"
+          class="text-white/50 hover:text-cyan-400 transition-colors flex-shrink-0 mt-1 sm:mt-0"
         >
           <CheckCircle
             :class="task.completed ? 'text-cyan-400' : 'text-white/50'"
@@ -18,20 +18,20 @@
             'line-through text-white/50': task.completed,
             'text-white': !task.completed,
           }"
-          class="text-base font-light"
+          class="text-base font-light break-words"
         >
           {{ task.text }}
         </span>
       </div>
 
-      <div class="flex items-center space-x-2">
+      <div class="flex items-center space-x-2 pl-9 sm:pl-0 flex-shrink-0">
         <span
           :class="priorityColorClass(task.priority)"
           class="text-xs font-medium px-2 py-1 rounded-full"
         >
           {{ $t('todo.form.priority' + task.priority) }}
         </span>
-        <span class="text-white/50 text-xs">
+        <span class="text-white/50 text-xs whitespace-nowrap">
           {{ formatDeadline(task.deadline) }}
         </span>
       </div>

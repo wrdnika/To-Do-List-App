@@ -2,9 +2,9 @@
   <div class="flex flex-col h-full">
     <div class="flex-shrink-0 z-10 bg-transparent">
       
-      <div class="p-2 border-b border-white/10">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <div class="relative flex-grow sm:w-auto w-full">
+      <div class="p-2 md:p-4 border-b border-white/10">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+          <div class="relative flex-grow">
             <input
               v-model="searchQuery"
               type="text"

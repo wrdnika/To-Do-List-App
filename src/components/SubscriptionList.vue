@@ -1,13 +1,13 @@
 <template>
   <div class="h-full flex flex-col">
     <!-- Summary Header -->
-    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-6 border border-white/20">
-      <h2 class="text-sm font-medium text-white/70 uppercase tracking-widest mb-1">{{ $t('subscription.totalExpense') }}</h2>
+    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 md:p-6 mb-4 md:mb-6 border border-white/20">
+      <h2 class="text-xs md:text-sm font-medium text-white/70 uppercase tracking-widest mb-1">{{ $t('subscription.totalExpense') }}</h2>
       <div class="flex items-baseline gap-2">
-        <span class="text-4xl font-bold text-white tracking-tight">
+        <span class="text-2xl md:text-4xl font-bold text-white tracking-tight">
           {{ formatPrice(totalMonthlyExpense) }}
         </span>
-        <span class="text-white/50 text-sm">/ {{ $t('subscription.month') }}</span>
+        <span class="text-white/50 text-xs md:text-sm">/ {{ $t('subscription.month') }}</span>
       </div>
     </div>
 
@@ -29,31 +29,31 @@
         :key="sub.id"
         class="group relative bg-gray-900/40 backdrop-blur-sm border border-white/10 hover:border-cyan-500/50 rounded-2xl p-4 transition-all duration-300 hover:bg-gray-800/60 transition-colors"
       >
-        <div class="flex items-start justify-between mb-4">
-          <div class="flex items-center gap-3">
+        <div class="flex flex-col sm:flex-row items-start sm:items-start justify-between mb-4 gap-3">
+          <div class="flex items-center gap-3 flex-1 min-w-0">
             <SubscriptionLogo :name="sub.name" size="md" />
-            <div>
-              <h3 class="font-bold text-white text-lg leading-tight">{{ sub.name }}</h3>
-              <span class="text-xs text-cyan-400 font-medium px-2 py-0.5 bg-cyan-500/10 rounded-full border border-cyan-500/20">
+            <div class="min-w-0 flex-1">
+              <h3 class="font-bold text-white text-lg leading-tight break-words">{{ sub.name }}</h3>
+              <span class="text-xs text-cyan-400 font-medium px-2 py-0.5 bg-cyan-500/10 rounded-full border border-cyan-500/20 inline-block">
                 {{ sub.categories?.name || 'Uncategorized' }}
               </span>
             </div>
           </div>
-          <div class="text-right">
-            <p class="font-bold text-white">{{ formatPrice(sub.price) }}</p>
+          <div class="text-left sm:text-right w-full sm:w-auto">
+            <p class="font-bold text-white text-xl sm:text-base">{{ formatPrice(sub.price) }}</p>
             <p class="text-xs text-white/50 capitalize">{{ $t('common.' + sub.cycle) }}</p>
           </div>
         </div>
 
-        <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs">
+        <div class="pt-3 border-t border-white/5 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs gap-2">
           <div class="flex items-center gap-1.5 text-white/60">
             <Calendar class="w-3.5 h-3.5" />
             <span>{{ $t('subscription.next') }}: {{ formatDate(sub.next_payment_date || sub.first_payment_date) }}</span>
           </div>
           
-          <div class="flex items-center gap-3">
-            <!-- Card Actions (Visible on hover) -->
-            <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div class="flex items-center gap-3 self-end sm:self-auto">
+            <!-- Card Actions (Visible on hover on desktop, always visible on mobile) -->
+            <div class="flex items-center gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
               <button 
                 @click.stop="$emit('edit', sub)" 
                 class="text-white/40 hover:text-cyan-400 transition-colors"

@@ -1,11 +1,11 @@
 <template>
-  <div class="h-full flex flex-col gap-4 p-4">
+  <div class="h-full flex flex-col gap-3 md:gap-4 p-3 md:p-4">
     <!-- Header with Action Button -->
-    <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-bold text-white tracking-tight">{{ $t('subscription.title') }}</h1>
+    <div class="flex items-center justify-between gap-2">
+      <h1 class="text-xl md:text-2xl font-bold text-white tracking-tight">{{ $t('subscription.title') }}</h1>
       <button
         @click="openAddModal"
-        class="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-400 border border-cyan-500/20 hover:bg-cyan-500/20 px-4 py-2 rounded-xl flex items-center gap-2 font-medium transition-all duration-300"
+        class="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-400 border border-cyan-500/20 hover:bg-cyan-500/20 px-3 sm:px-4 py-2 rounded-xl flex items-center gap-2 font-medium transition-all duration-300"
       >
         <Plus class="w-5 h-5" />
         <span class="hidden sm:inline">{{ $t('subscription.add') }}</span>
