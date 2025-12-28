@@ -4,7 +4,7 @@
       <input
         v-model="newTask"
         type="text"
-        placeholder="What needs to be done?"
+        :placeholder="$t('todo.form.placeholder')"
         class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all duration-300"
         required
       />
@@ -23,9 +23,9 @@
           v-model="priority"
           class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all duration-300 appearance-none pr-10"
         >
-          <option value="High" class="bg-gray-800">High Priority</option>
-          <option value="Medium" class="bg-gray-800">Medium Priority</option>
-          <option value="Low" class="bg-gray-800">Low Priority</option>
+          <option value="High" class="bg-gray-800">{{ $t('todo.form.priorityHigh') }}</option>
+          <option value="Medium" class="bg-gray-800">{{ $t('todo.form.priorityMedium') }}</option>
+          <option value="Low" class="bg-gray-800">{{ $t('todo.form.priorityLow') }}</option>
         </select>
         <ChevronDown
           ref="dropdownIcon"
@@ -39,14 +39,14 @@
       <input
         v-model="categories"
         type="text"
-        placeholder="Categories (comma-separated)"
+        :placeholder="$t('todo.form.categories')"
         class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all duration-300"
       />
     </div>
     <div class="relative">
       <textarea
         v-model="notes"
-        placeholder="Notes"
+        :placeholder="$t('todo.form.notes')"
         class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all duration-300"
       ></textarea>
     </div>
@@ -55,7 +55,7 @@
       class="w-full p-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl font-semibold uppercase tracking-wider hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2"
     >
       <PlusIcon class="w-5 h-5" />
-      Add Task
+      {{ $t('todo.form.add') }}
     </button>
   </form>
 </template>

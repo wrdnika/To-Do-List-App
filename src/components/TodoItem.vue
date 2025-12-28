@@ -29,7 +29,7 @@
           :class="priorityColorClass(task.priority)"
           class="text-xs font-medium px-2 py-1 rounded-full"
         >
-          {{ task.priority }}
+          {{ $t('todo.form.priority' + task.priority) }}
         </span>
         <span class="text-white/50 text-xs">
           {{ formatDeadline(task.deadline) }}
@@ -73,12 +73,12 @@
         <div
           class="bg-white/20 backdrop-blur-lg border border-white/20 rounded-2xl p-6 w-full max-w-md shadow-2xl"
         >
-          <h2 class="text-xl text-white mb-4 font-light">Edit Task</h2>
+          <h2 class="text-xl text-white mb-4 font-light">{{ $t('todo.editTitle') }}</h2>
           <div class="space-y-4">
             <input
               v-model="editText"
               class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400"
-              placeholder="Task name"
+              :placeholder="$t('todo.form.placeholder')"
             />
             <input
               type="date"
@@ -89,19 +89,19 @@
               v-model="editPriority"
               class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400"
             >
-              <option value="High" class="bg-gray-800">High</option>
-              <option value="Medium" class="bg-gray-800">Medium</option>
-              <option value="Low" class="bg-gray-800">Low</option>
+              <option value="High" class="bg-gray-800">{{ $t('todo.form.priorityHigh') }}</option>
+              <option value="Medium" class="bg-gray-800">{{ $t('todo.form.priorityMedium') }}</option>
+              <option value="Low" class="bg-gray-800">{{ $t('todo.form.priorityLow') }}</option>
             </select>
             <input
               v-model="editCategories"
               class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400"
-              placeholder="Categories (comma-separated)"
+              :placeholder="$t('todo.form.categories')"
             />
             <textarea
               v-model="editNotes"
               class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400"
-              placeholder="Notes"
+              :placeholder="$t('todo.form.notes')"
             ></textarea>
           </div>
           <div class="flex justify-end space-x-2 mt-6">
@@ -109,13 +109,13 @@
               @click="saveEdit"
               class="bg-cyan-500 text-white px-4 py-2 rounded-xl hover:bg-cyan-600 transition-colors"
             >
-              Save
+              {{ $t('todo.save') }}
             </button>
             <button
               @click="editing = false"
               class="bg-white/20 text-white px-4 py-2 rounded-xl hover:bg-white/30 transition-colors"
             >
-              Cancel
+              {{ $t('todo.cancel') }}
             </button>
           </div>
         </div>
@@ -127,6 +127,9 @@
 <script setup>
 import { ref } from "vue";
 import { CheckCircle, Edit2, Trash2 } from "lucide-vue-next";
+import { useI18n } from 'vue-i18n';
+
+const { t, locale } = useI18n();
 
 const props = defineProps(["task"]);
 const emit = defineEmits(["toggle", "remove", "update"]);
@@ -171,7 +174,7 @@ const priorityColorClass = (priority) => {
 };
 
 const formatDeadline = (deadline) => {
-  return new Date(deadline).toLocaleDateString("en-US", {
+  return new Date(deadline).toLocaleDateString(locale.value === 'id' ? 'id-ID' : 'en-US', {
     year: "numeric",
     month: "short",
     day: "numeric",

@@ -16,6 +16,7 @@
     "ogl": "^1.0.11",
     "tailwind-merge": "^3.4.0",
     "vue": "^3.3.4",
+    "vue-i18n": "^11.2.7",
     "vue-router": "^4.6.4"
   },
   "devDependencies": {

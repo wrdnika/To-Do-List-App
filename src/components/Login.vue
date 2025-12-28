@@ -1,9 +1,20 @@
 <template>
   <div class="relative h-screen flex flex-col items-center justify-center z-10 px-4">
+    <!-- Language Switcher -->
+    <div class="absolute top-6 right-6">
+      <button 
+        @click="toggleLanguage" 
+        class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white/70 hover:text-white text-xs font-medium transition-colors border border-white/10 backdrop-blur-md"
+      >
+        <Globe class="w-3.5 h-3.5" />
+        <span>{{ locale === 'id' ? 'ID' : 'EN' }}</span>
+      </button>
+    </div>
+
     <div class="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-2xl shadow-2xl text-center max-w-md w-full">
       <img src="/wrdnika-white.png" alt="Logo" class="w-20 h-20 object-contain mx-auto mb-6 rounded-2xl" />
-      <h1 class="text-3xl font-light text-white mb-2">Welcome Back</h1>
-      <p class="text-gray-400 mb-8">Sign in to sync your tasks across devices.</p>
+      <h1 class="text-3xl font-light text-white mb-2">{{ $t('login.title') }}</h1>
+      <p class="text-gray-400 mb-8">{{ $t('login.subtitle') }}</p>
       
       <button 
         @click="handleLogin"
@@ -22,7 +33,17 @@
 </template>
 
 <script setup>
+import { Globe } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
+
 defineProps({
   handleLogin: Function,
 });
+
+const { locale } = useI18n();
+
+const toggleLanguage = () => {
+  locale.value = locale.value === 'id' ? 'en' : 'id';
+  localStorage.setItem('language', locale.value);
+};
 </script>

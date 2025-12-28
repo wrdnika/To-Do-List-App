@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
+import i18n from "./i18n";
 import "./style.css";
 import * as LucideIcons from "lucide-vue-next";
 import { registerSW } from "virtual:pwa-register";
@@ -18,6 +19,7 @@ const updateSW = registerSW({
 
 const app = createApp(App);
 app.use(router);
+app.use(i18n);
 Object.entries(LucideIcons).forEach(([key, component]) => {
   app.component(key, component);
 });

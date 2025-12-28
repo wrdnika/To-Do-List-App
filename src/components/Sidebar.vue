@@ -16,23 +16,23 @@
     </div>
 
     <!-- Navigation Section -->
-    <nav class="flex-grow px-4 space-y-2 mt-4">
+    <nav class="flex-grow px-6 space-y-2 mt-6">
       <router-link
         to="/"
         class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/60 hover:text-white hover:bg-white/5 transition-all duration-300 group"
-        active-class="bg-white/10 text-white !text-cyan-400"
+        active-class="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-400 border border-cyan-500/20"
       >
         <ListTodo class="w-5 h-5 group-hover:scale-110 transition-transform" />
-        <span class="font-medium">Todo List</span>
+        <span class="font-medium">{{ $t('sidebar.todoList') }}</span>
       </router-link>
 
       <router-link
         to="/subscriptions"
         class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/60 hover:text-white hover:bg-white/5 transition-all duration-300 group"
-        active-class="bg-white/10 text-white !text-cyan-400"
+        active-class="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-400 border border-cyan-500/20"
       >
         <CreditCard class="w-5 h-5 group-hover:scale-110 transition-transform" />
-        <span class="font-medium">Subscriptions</span>
+        <span class="font-medium">{{ $t('sidebar.subscriptions') }}</span>
       </router-link>
     </nav>
   </aside>

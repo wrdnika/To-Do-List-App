@@ -13,7 +13,7 @@
       />
     </div>
     
-    <Modal :show="showModal" @close="showModal = false">
+    <Modal :show="showModal" :title="$t('todo.modalTitle')" @close="showModal = false">
       <TodoForm @add="addTask" />
     </Modal>
   </div>

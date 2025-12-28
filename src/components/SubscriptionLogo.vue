@@ -74,7 +74,7 @@ const brandDomains = {
   aws: 'aws.amazon.com',
   amazon: 'amazon.com',
   spotify: 'spotify.com',
-  gemini: 'deepmind.google',
+  gemini: 'gemini.google.com',
   gpt: 'openai.com',
   openai: 'openai.com',
   gcp: 'cloud.google.com',

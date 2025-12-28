@@ -2,7 +2,7 @@
   <form @submit.prevent="handleSubmit" class="space-y-4">
     <!-- Name Input with Datalist -->
     <div class="relative">
-      <label class="block text-sm font-medium text-white mb-1">Service Name</label>
+      <label class="block text-sm font-medium text-white mb-1">{{ $t('subscription.form.serviceName') }}</label>
       <input
         v-model="form.name"
         type="text"
@@ -29,7 +29,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <!-- Price Input -->
       <div class="relative">
-        <label class="block text-sm font-medium text-white mb-1">Price (IDR)</label>
+        <label class="block text-sm font-medium text-white mb-1">{{ $t('subscription.form.price') }}</label>
         <div class="relative">
           <span class="absolute left-3 top-1/2 -translate-y-1/2 text-white/50">Rp</span>
           <input
@@ -44,14 +44,14 @@
 
       <!-- Cycle and First Payment Date -->
       <div class="relative">
-        <label class="block text-sm font-medium text-white mb-1">Billing Cycle</label>
+        <label class="block text-sm font-medium text-white mb-1">{{ $t('subscription.form.cycle') }}</label>
         <select
           v-model="form.cycle"
           class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all duration-300 appearance-none"
         >
-          <option value="monthly" class="bg-gray-800">Monthly</option>
-          <option value="yearly" class="bg-gray-800">Yearly</option>
-          <option value="weekly" class="bg-gray-800">Weekly</option>
+          <option value="monthly" class="bg-gray-800">{{ $t('common.monthly') }}</option>
+          <option value="yearly" class="bg-gray-800">{{ $t('common.yearly') }}</option>
+          <option value="weekly" class="bg-gray-800">{{ $t('common.weekly') }}</option>
         </select>
         <ChevronDown class="absolute right-3 top-[38px] text-white/50 w-5 h-5 pointer-events-none" />
       </div>
@@ -59,7 +59,7 @@
 
     <!-- Category Dropdown -->
     <div class="relative">
-      <label class="block text-sm font-medium text-white mb-1">Category</label>
+      <label class="block text-sm font-medium text-white mb-1">{{ $t('subscription.form.category') }}</label>
       <div class="relative">
         <select
           v-model="form.category_id"
@@ -67,11 +67,11 @@
           required
           @change="handleCategoryChange"
         >
-          <option value="" disabled class="bg-gray-800">Select Category</option>
+          <option value="" disabled class="bg-gray-800">{{ $t('subscription.form.selectCategory') }}</option>
           <option v-for="cat in categories" :key="cat.id" :value="cat.id" class="bg-gray-800">
             {{ cat.name }}
           </option>
-          <option value="new" class="bg-cyan-900 font-bold">+ Add New Category</option>
+          <option value="new" class="bg-cyan-900 font-bold">{{ $t('subscription.form.addNewCategory') }}</option>
         </select>
         <ChevronDown class="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 w-5 h-5 pointer-events-none" />
       </div>
@@ -79,7 +79,7 @@
 
     <!-- First Payment Date -->
     <div class="relative">
-      <label class="block text-sm font-medium text-white mb-1">First Payment</label>
+      <label class="block text-sm font-medium text-white mb-1">{{ $t('subscription.form.firstPayment') }}</label>
       <input
         v-model="form.first_payment_date"
         type="date"
@@ -90,7 +90,7 @@
 
     <!-- Notes -->
     <div class="relative">
-      <label class="block text-sm font-medium text-white mb-1">Notes (Optional)</label>
+      <label class="block text-sm font-medium text-white mb-1">{{ $t('subscription.form.notes') }}</label>
       <textarea
         v-model="form.notes"
         placeholder="e.g. Shared with family"
@@ -105,7 +105,7 @@
       class="w-full p-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl font-semibold uppercase tracking-wider hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
     >
       <Loader2 v-if="loading" class="w-5 h-5 animate-spin" />
-      <span v-else>{{ subscription ? 'Update Subscription' : 'Save Subscription' }}</span>
+      <span v-else>{{ subscription ? $t('subscription.form.update') : $t('subscription.form.save') }}</span>
     </button>
   </form>
 </template>

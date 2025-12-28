@@ -2,12 +2,12 @@
   <div class="h-full flex flex-col">
     <!-- Summary Header -->
     <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-6 border border-white/20">
-      <h2 class="text-sm font-medium text-white/70 uppercase tracking-widest mb-1">Total Monthly Expense</h2>
+      <h2 class="text-sm font-medium text-white/70 uppercase tracking-widest mb-1">{{ $t('subscription.totalExpense') }}</h2>
       <div class="flex items-baseline gap-2">
         <span class="text-4xl font-bold text-white tracking-tight">
           {{ formatPrice(totalMonthlyExpense) }}
         </span>
-        <span class="text-white/50 text-sm">/ month</span>
+        <span class="text-white/50 text-sm">/ {{ $t('subscription.month') }}</span>
       </div>
     </div>
 
@@ -19,7 +19,7 @@
     <!-- Empty State -->
     <div v-else-if="subscriptions.length === 0" class="flex-grow flex flex-col items-center justify-center text-white/50">
       <CreditCard class="w-16 h-16 mb-4 opacity-50" />
-      <p class="text-lg">No active subscriptions found.</p>
+      <p class="text-lg">{{ $t('subscription.noActive') }}</p>
     </div>
 
     <!-- Subscription Grid -->
@@ -41,14 +41,14 @@
           </div>
           <div class="text-right">
             <p class="font-bold text-white">{{ formatPrice(sub.price) }}</p>
-            <p class="text-xs text-white/50 capitalize">{{ sub.cycle }}</p>
+            <p class="text-xs text-white/50 capitalize">{{ $t('common.' + sub.cycle) }}</p>
           </div>
         </div>
 
         <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs">
           <div class="flex items-center gap-1.5 text-white/60">
             <Calendar class="w-3.5 h-3.5" />
-            <span>Next: {{ formatDate(sub.next_payment_date || sub.first_payment_date) }}</span>
+            <span>{{ $t('subscription.next') }}: {{ formatDate(sub.next_payment_date || sub.first_payment_date) }}</span>
           </div>
           
           <div class="flex items-center gap-3">
@@ -73,7 +73,7 @@
             <!-- Status -->
             <div v-if="sub.status === 'active'" class="flex items-center gap-1.5 text-green-400">
               <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-              <span>Active</span>
+              <span>{{ $t('subscription.active') }}</span>
             </div>
           </div>
         </div>

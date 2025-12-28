@@ -8,7 +8,7 @@
             <input
               v-model="searchQuery"
               type="text"
-              placeholder="Search tasks..."
+              :placeholder="$t('todo.searchPlaceholder')"
               @input="applySearch"
               class="w-full p-3 bg-white/10 border border-white/20 text-white rounded-xl placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all duration-300"
             />
@@ -23,11 +23,11 @@
               </button>
               <div v-if="showFilterOptions" class="absolute right-0 mt-2 w-72 bg-gray-800/90 backdrop-blur-lg border border-white/20 rounded-lg shadow-xl z-20 p-4 space-y-4">
                 <div>
-                  <label for="status-filter" class="block text-sm font-medium text-white/80 mb-1">Status</label>
+                  <label for="status-filter" class="block text-sm font-medium text-white/80 mb-1">{{ $t('todo.status') }}</label>
                   <select id="status-filter" v-model="filters.status" @change="applyFilters" class="w-full p-2 bg-white/10 border border-white/20 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400">
-                    <option value="all" class="bg-gray-800">All</option>
-                    <option value="active" class="bg-gray-800">Active</option>
-                    <option value="completed" class="bg-gray-800">Completed</option>
+                    <option value="all" class="bg-gray-800">{{ $t('todo.filterAll') }}</option>
+                    <option value="active" class="bg-gray-800">{{ $t('todo.filterActive') }}</option>
+                    <option value="completed" class="bg-gray-800">{{ $t('todo.filterCompleted') }}</option>
                   </select>
                 </div>
                 </div>
@@ -45,9 +45,9 @@
                 v-if="showSortOptions"
                 class="absolute right-0 mt-2 w-48 bg-gray-800/90 backdrop-blur-lg border border-white/20 rounded-lg shadow-xl z-20"
               >
-                <a href="#" @click.prevent="applySort('deadline')" class="block px-4 py-2 text-white hover:bg-white/10">Deadline</a>
-                <a href="#" @click.prevent="applySort('priority')" class="block px-4 py-2 text-white hover:bg-white/10">Priority</a>
-                <a href="#" @click.prevent="applySort('createdDate')" class="block px-4 py-2 text-white hover:bg-white/10">Created Date</a>
+                <a href="#" @click.prevent="applySort('deadline')" class="block px-4 py-2 text-white hover:bg-white/10">{{ $t('todo.sortDeadline') }}</a>
+                <a href="#" @click.prevent="applySort('priority')" class="block px-4 py-2 text-white hover:bg-white/10">{{ $t('todo.sortPriority') }}</a>
+                <a href="#" @click.prevent="applySort('createdDate')" class="block px-4 py-2 text-white hover:bg-white/10">{{ $t('todo.sortCreated') }}</a>
               </div>
             </div>
           </div>
@@ -55,15 +55,15 @@
       </div>
 
       <h2 class="text-2xl font-semibold text-white py-2 px-4 border-b border-white/10 flex-shrink-0">
-        Tasks List
+        {{ $t('todo.header') }}
       </h2>
     </div>
 
     <div class="flex-1 overflow-y-auto min-h-0 custom-scrollbar relative p-1">
       <div v-if="tasks.length === 0" class="text-center text-white/50 p-8">
-        <p class="mb-4">No tasks match your current filters.</p>
+        <p class="mb-4">{{ $t('todo.noTasks') }}</p>
         <p class="text-sm">
-          Try adjusting your search or filter settings, or add a new task!
+          {{ $t('todo.noTasksSub') }}
         </p>
       </div>
       <TransitionGroup
