@@ -29,48 +29,20 @@
             <Sidebar />
           </div>
           <div class="lg:col-span-3 h-full overflow-hidden">
-            <TodoList
-              :tasks="filteredTasks"
-              @toggle="toggleTask"
-              @remove="removeTask"
-              @update="updateTask"
-              @search="handleSearch"
-              @filter="handleFilter"
-              @sort="handleSort"
-              @open-modal="showModal = true"
-            />
+            <router-view :session="session" />
           </div>
         </div>
       </div>
     </main>
-    <Modal :show="showModal" @close="showModal = false">
-      <TodoForm @add="addTask" />
-    </Modal>
   </div>
 </template>
 
 <script setup>
 import { useAuth } from './composables/useAuth';
-import { useTasks } from './composables/useTasks';
 import Login from './components/Login.vue';
 import Header from './components/Header.vue';
 import Sidebar from './components/Sidebar.vue';
-import TodoList from './components/TodoList.vue';
-import Modal from './components/Modal.vue';
-import TodoForm from './components/TodoForm.vue';
 import DotGrid from './components/DotGrid.vue';
 
 const { session, handleLogin, handleLogout } = useAuth();
-const {
-  tasks,
-  showModal,
-  addTask,
-  toggleTask,
-  removeTask,
-  updateTask,
-  handleSearch,
-  handleFilter,
-  handleSort,
-  filteredTasks,
-} = useTasks(session);
 </script>
