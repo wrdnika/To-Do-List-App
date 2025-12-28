@@ -7,15 +7,6 @@
     </div>
 
     <div class="flex items-center gap-4">
-      <!-- Language Switcher -->
-      <button 
-        @click="toggleLanguage" 
-        class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-xs font-medium transition-colors border border-white/5"
-      >
-        <Globe class="w-3.5 h-3.5" />
-        <span>{{ locale === 'id' ? 'ID' : 'EN' }}</span>
-      </button>
-
       <div v-if="session" class="relative">
         <button @click="toggleProfile" class="flex items-center gap-3 focus:outline-none group">
           <div class="hidden md:block text-right">
@@ -39,7 +30,20 @@
               <Info class="w-4 h-4 group-hover:scale-110 transition-transform" />
               <span>{{ $t('header.about') }}</span>
             </button>
+            
             <div class="h-px bg-white/5 my-2"></div>
+
+            <!-- Moved Language Switcher here -->
+            <button @click="toggleLanguage" class="w-full flex items-center gap-3 px-3 py-2 text-sm text-white/60 hover:text-white hover:bg-white/5 rounded-lg transition-colors group">
+              <Globe class="w-4 h-4 group-hover:scale-110 transition-transform" />
+              <div class="flex-grow text-left">
+                <span>{{ $t('header.language') }}</span>
+              </div>
+              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/10 text-white/40">
+                {{ locale === 'id' ? 'ID' : 'EN' }}
+              </span>
+            </button>
+
             <button @click="handleLogout" class="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
               <LogOut class="w-4 h-4" />
               {{ $t('header.signOut') }}

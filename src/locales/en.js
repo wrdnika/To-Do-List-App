@@ -9,7 +9,8 @@ export default {
         tracker: 'Subscription Tracker',
         settings: 'Settings',
         about: 'About Ingetinka',
-        signOut: 'Sign Out'
+        signOut: 'Sign Out',
+        language: 'Language'
     },
     login: {
         title: 'Welcome Back',

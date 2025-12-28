@@ -5,7 +5,7 @@
       <h1 class="text-2xl font-bold text-white tracking-tight">{{ $t('subscription.title') }}</h1>
       <button
         @click="openAddModal"
-        class="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white px-4 py-2 rounded-xl flex items-center gap-2 font-medium transition-all shadow-lg hover:shadow-cyan-500/20"
+        class="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-400 border border-cyan-500/20 hover:bg-cyan-500/20 px-4 py-2 rounded-xl flex items-center gap-2 font-medium transition-all duration-300"
       >
         <Plus class="w-5 h-5" />
         <span class="hidden sm:inline">{{ $t('subscription.add') }}</span>

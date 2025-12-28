@@ -9,7 +9,8 @@ export default {
         tracker: 'Pelacak Langganan',
         settings: 'Pengaturan',
         about: 'Tentang Ingetinka',
-        signOut: 'Keluar'
+        signOut: 'Keluar',
+        language: 'Ganti Bahasa'
     },
     login: {
         title: 'Selamat Datang',
