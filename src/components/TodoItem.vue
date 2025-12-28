@@ -1,6 +1,6 @@
 <template>
   <div
-    class="p-4 bg-white/10 border-b border-white/10 last:border-b-0 transition-all duration-300 hover:bg-white/15"
+    class="p-4  border-b border-white/10 last:border-b-0 transition-all duration-300 hover:bg-white/5"
   >
     <div class="flex justify-between items-center">
       <div class="flex items-center space-x-3">

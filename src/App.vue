@@ -1,5 +1,20 @@
 <template>
-  <LiquidBackground class="absolute top-0 left-0 w-full h-full z-0" />
+  <div class="absolute top-0 left-0 w-full h-full z-0 bg-gray-900">
+    <DotGrid
+      :dot-size="2"
+      :gap="16"
+      base-color="#111827"
+      active-color="#3B82F6"
+      :proximity="100"
+      :speed-trigger="100"
+      :shock-radius="250"
+      :shock-strength="5"
+      :max-speed="5000"
+      :resistance="750"
+      :return-duration="1.5"
+      class-name="custom-dot-grid"
+    />
+  </div>
 
   <div v-if="!session" class="h-screen flex items-center justify-center">
     <Login :handleLogin="handleLogin" />
@@ -43,7 +58,7 @@ import Sidebar from './components/Sidebar.vue';
 import TodoList from './components/TodoList.vue';
 import Modal from './components/Modal.vue';
 import TodoForm from './components/TodoForm.vue';
-import LiquidBackground from './components/LiquidBackground.vue';
+import DotGrid from './components/DotGrid.vue';
 
 const { session, handleLogin, handleLogout } = useAuth();
 const {
