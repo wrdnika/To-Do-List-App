@@ -1,6 +1,6 @@
 <template>
   <aside 
-    class="flex flex-col h-screen w-64 bg-gray-900/40 backdrop-blur-xl border-r border-white/10 transition-all duration-300 relative z-30"
+    class="flex flex-col h-screen w-64 bg-gray-900/40 backdrop-blur-md border-r border-white/10 transition-all duration-300 relative z-30"
   >
     <!-- Branding Section -->
     <div class="p-6">

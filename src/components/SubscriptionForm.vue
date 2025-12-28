@@ -134,6 +134,15 @@ const form = reactive({
   notes: '',
 });
 
+const resetForm = () => {
+  form.name = '';
+  form.price = '';
+  form.cycle = 'monthly';
+  form.category_id = '';
+  form.first_payment_date = new Date().toISOString().substr(0, 10),
+  form.notes = '';
+};
+
 // Watch for subscription prop changes (for editing)
 watch(() => props.subscription, (newSub) => {
   if (newSub) {
@@ -148,15 +157,6 @@ watch(() => props.subscription, (newSub) => {
     resetForm();
   }
 }, { immediate: true });
-
-const resetForm = () => {
-  form.name = '';
-  form.price = '';
-  form.cycle = 'monthly';
-  form.category_id = '';
-  form.first_payment_date = new Date().toISOString().substr(0, 10);
-  form.notes = '';
-};
 
 // Predefined service data for auto-fill
 const serviceDefaults = {
@@ -238,7 +238,7 @@ const handleSubmit = async () => {
     const payload = {
       user_id: props.session.user.id,
       name: form.name,
-      price: form.price,
+      price: Number(form.price), // Ensure it's a number
       currency: 'IDR',
       cycle: form.cycle,
       first_payment_date: form.first_payment_date,
@@ -267,6 +267,14 @@ const handleSubmit = async () => {
     
     resetForm();
   } catch (error) {
+    console.error('Submission Error:', error);
+    console.error('Payload:', {
+       user_id: props.session?.user?.id,
+       name: form.name,
+       price: form.price,
+       cycle: form.cycle,
+       category: form.category_id
+    });
     alert('Error saving subscription: ' + error.message);
   } finally {
     loading.value = false;

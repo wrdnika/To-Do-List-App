@@ -4,7 +4,7 @@
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-bold text-white tracking-tight">Subscriptions</h1>
       <button
-        @click="showFormModal = true"
+        @click="openAddModal"
         class="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white px-4 py-2 rounded-xl flex items-center gap-2 font-medium transition-all shadow-lg hover:shadow-cyan-500/20"
       >
         <Plus class="w-5 h-5" />
@@ -23,18 +23,17 @@
     </div>
 
     <!-- Form Modal (Add/Edit) -->
-    <Modal :show="showFormModal" @close="closeModal">
-      <div class="p-6">
-        <h2 class="text-xl font-bold text-white mb-6">
-          {{ editingSubscription ? 'Edit Subscription' : 'Add New Subscription' }}
-        </h2>
-        <SubscriptionForm 
-          :session="session" 
-          :subscription="editingSubscription"
-          @added="handleSuccess" 
-          @updated="handleSuccess"
-        />
-      </div>
+    <Modal 
+      :show="showFormModal" 
+      :title="editingSubscription ? 'Edit Subscription' : 'Add New Subscription'"
+      @close="closeModal"
+    >
+      <SubscriptionForm 
+        :session="session" 
+        :subscription="editingSubscription"
+        @added="handleSuccess" 
+        @updated="handleSuccess"
+      />
     </Modal>
   </div>
 </template>
@@ -54,6 +53,11 @@ const props = defineProps({
 const showFormModal = ref(false);
 const editingSubscription = ref(null);
 const subListRef = ref(null);
+
+const openAddModal = () => {
+  editingSubscription.value = null;
+  showFormModal.value = true;
+};
 
 const handleEdit = (sub) => {
   editingSubscription.value = sub;
